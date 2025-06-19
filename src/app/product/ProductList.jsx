@@ -47,7 +47,12 @@ export default function ProductList() {
       {products.map((p) => (
         <div key={p._id} className="border rounded shadow-md p-4">
           <div className="relative w-full h-48" onClick={() => handleImageClick(p._id)}>
-            <Image src={p.images[0]} alt={p.name} fill className="object-cover rounded" />
+          <img
+            src={p.images[0]}
+            alt={p.name}
+            className="w-full h-full object-cover rounded-lg border border-gray-300"
+          />
+            {/* <Image src={p.images[0]} alt={p.name} fill className="object-cover rounded" /> */}
           </div>
           <h2 className="text-lg font-semibold mt-2">{p.name}</h2>
           <p className="text-sm text-gray-600">{p.description}</p>
