@@ -1,27 +1,27 @@
 // lib/mongodb.js
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-const options = {};
-
 let client;
 let clientPromise;
 
-if (!uri) {
-  throw new Error("Please define the MONGODB_URI environment variable in .env.local");
-}
+function getClient() {
+  const uri = process.env.MONGODB_URI;
+  const options = {};
 
-if (process.env.NODE_ENV === "development") {
-  // In development, use a global variable so the client is not recreated on every hot reload
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
+  if (!uri) {
+    throw new Error("Please define the MONGODB_URI environment variable");
   }
-  clientPromise = global._mongoClientPromise;
-} else {
-  // In production, always create a new client
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+
+  if (process.env.NODE_ENV === "development") {
+    if (!global._mongoClientPromise) {
+      client = new MongoClient(uri, options);
+      global._mongoClientPromise = client.connect();
+    }
+    return global._mongoClientPromise;
+  } else {
+    client = new MongoClient(uri, options);
+    return client.connect();
+  }
 }
 
-export default clientPromise;
+export default getClient;

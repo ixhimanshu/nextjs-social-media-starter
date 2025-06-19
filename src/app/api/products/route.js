@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
+import getClient from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
 export async function GET() {
   try {
-    const client = await dbConnect;
+    const client = await getClient();
     const db = client.db('ecom');
 
     const products = await db.collection('products').find({}).toArray();
@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(req) {
   try {
-    const client = await dbConnect;
+    const client = await getClient();
     const db = client.db('ecom');
     const data = await req.json();
 
@@ -31,7 +31,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
   try {
-    const client = await dbConnect;
+    const client = await getClient();
     const db = client.db('ecom');
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
@@ -51,7 +51,7 @@ export async function PUT(req) {
 
 export async function DELETE(req) {
   try {
-    const client = await dbConnect;
+    const client = await getClient();
     const db = client.db('ecom');
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
