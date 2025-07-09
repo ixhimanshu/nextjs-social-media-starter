@@ -19,7 +19,7 @@ export async function PUT(req) {
       );
     }
 
-    const client = await dbConnect;
+    const client = await dbConnect();
     const db = client.db("ecom");
 
     const user = await db.collection("users").findOne({ _id: new ObjectId(userId) });

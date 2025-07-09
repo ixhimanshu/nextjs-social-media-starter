@@ -10,7 +10,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
 
-    const client = await dbConnect;
+    const client = await dbConnect();
     const db = client.db("ecom");
 
     // Find user by email

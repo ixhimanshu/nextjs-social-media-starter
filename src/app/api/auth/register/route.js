@@ -11,7 +11,7 @@ export async function POST(req) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
-    const client = await dbConnect;
+    const client = await dbConnect();
     const db = client.db('ecom');
 
     const existingUser = await db.collection('users').findOne({ email });

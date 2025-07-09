@@ -1,17 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from 'next/navigation';
-
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [message, setMessage] = useState(null);
   const router = useRouter();
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
 
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
     setMessage(null);
 
     try {
@@ -24,39 +28,41 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setMessage({ type: "error", text: data.error || "Something went wrong." });
-      } else {
-        setMessage({ type: "success", text: "Registered successfully. Please login." });
-        setForm({ name: "", email: "", password: "" });
-        router.push('/login')
+        setMessage({ type: "error", text: data.error || "Registration failed." });
+        setLoading(false);
+        return;
       }
+
+      setMessage({ type: "success", text: "Registration successful. Redirecting to login..." });
+      setForm({ name: "", email: "", password: "" });
+
+      setTimeout(() => router.push("/login"), 1500);
     } catch (err) {
-      setMessage({ type: "error", text: "Server error. Try again later." });
+      setMessage({ type: "error", text: "Something went wrong. Try again." });
+      setLoading(false);
     }
   }
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
-      <div className="bg-white shadow-xl rounded-xl p-8 sm:p-10 w-full max-w-md">
-        <h2 className="text-3xl font-extrabold text-gray-800 text-center mb-6">
-          Create an Account 🚀
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-200 to-indigo-300 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 sm:p-10 animate-fade-in">
+        <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-6">
+          Create Your MeshUp Account 🚀
         </h2>
+
         {message && (
-          <p
-            className={`mb-4 text-sm text-center font-medium ${
-              message.type === "error" ? "text-red-600" : "text-green-600"
-            }`}
-          >
+          <p className={`text-center text-sm font-medium mb-4 ${
+            message.type === "error" ? "text-red-600" : "text-green-600"
+          }`}>
             {message.text}
           </p>
         )}
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Full Name
+            </label>
             <input
               type="text"
               name="name"
@@ -67,8 +73,11 @@ export default function RegisterPage() {
               className="w-full px-4 py-2 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
             <input
               type="email"
               name="email"
@@ -76,11 +85,14 @@ export default function RegisterPage() {
               value={form.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className="w-full px-4 py-2 border text-black border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -88,14 +100,18 @@ export default function RegisterPage() {
               value={form.password}
               onChange={handleChange}
               placeholder="••••••••"
-              className="w-full px-4 py-2 border text-black border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
+
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+            disabled={loading}
+            className={`w-full ${
+              loading ? "bg-indigo-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
+            } text-white font-semibold py-2 px-4 rounded-md transition duration-200`}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
@@ -106,6 +122,6 @@ export default function RegisterPage() {
           </a>
         </p>
       </div>
-    </div>
+    </main>
   );
 }

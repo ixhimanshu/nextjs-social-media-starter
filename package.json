@@ -1,5 +1,5 @@
 {
-  "name": "ecommerce-nextjs-app",
+  "name": "nextjs-social-media",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "lucide-react": "^0.518.0",
     "mongodb": "^6.17.0",
     "next": "15.3.3",
     "react": "^19.0.0",

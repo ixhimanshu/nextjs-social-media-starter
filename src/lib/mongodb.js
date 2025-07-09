@@ -1,10 +1,8 @@
+import { MongoClient } from 'mongodb';
+
+
 // lib/mongodb.js
-import { MongoClient } from "mongodb";
-
-let client;
-let clientPromise;
-
-function getClient() {
+export default async function connectToDB() {
   const uri = process.env.MONGODB_URI;
   const options = {};
 
@@ -14,14 +12,10 @@ function getClient() {
 
   if (process.env.NODE_ENV === "development") {
     if (!global._mongoClientPromise) {
-      client = new MongoClient(uri, options);
-      global._mongoClientPromise = client.connect();
+      global._mongoClientPromise = new MongoClient(uri, options).connect();
     }
     return global._mongoClientPromise;
   } else {
-    client = new MongoClient(uri, options);
-    return client.connect();
+    return new MongoClient(uri, options).connect();
   }
 }
-
-export default getClient;
